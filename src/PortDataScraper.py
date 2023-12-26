@@ -1,4 +1,4 @@
-class PortDataScrapper():
+class PortDataScraper():
     def __init__(self, url):
         self.url = url
         self.data = self.scrap_data()

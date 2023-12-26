@@ -1,6 +1,6 @@
-from PortDataScrapper import PortDataScrapper
+from PortDataScraper import PortDataScraper
 
-class SantosDataScrapper(PortDataScrapper):
+class SantosDataScrapper(PortDataScraper):
     def __init__(self, url):
         super().__init__(url)
         self.data = self.scrap_data()
