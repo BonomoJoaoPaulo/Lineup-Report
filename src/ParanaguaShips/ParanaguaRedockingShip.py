@@ -1,10 +1,10 @@
-from MooredShip import MooredShip
+from ParanaguaShips.MooredShip import MooredShip
 
 
-class ParanaguaMooredShip(MooredShip):
+class ParanaguaRedockingShip(MooredShip):
     def __init__(self, programation: int, duv: int, cradle: str, ship: str, imo: str, loa: float, dwt: float,
-                 board: str, direction: str, agency: str, operator: str, goods: str, mooring: str, arrival: str,
-                 ets: str, tons_per_day: float, predict: float, realized: float, operator_balance: float, total_balance: float):
+                 board: str, direction: str, agency: str, operator: str, goods: str, mooring: str,
+                 arrival: str, ets: str, undocking: str, expected: float, realized: float, balance: float):
         super().__init__(ship, agency, arrival, goods, duv)
         self.programation = programation
         self.cradle = cradle
@@ -16,11 +16,10 @@ class ParanaguaMooredShip(MooredShip):
         self.operator = operator
         self.mooring = mooring
         self.ets = ets
-        self.tons_per_day = tons_per_day
-        self.predict = predict
+        self.undocking = undocking
+        self.expected = expected
         self.realized = realized
-        self.operator_balance = operator_balance
-        self.total_balance = total_balance
+        self.balance = balance
 
     def __str__(self):
         return f"Programation: {self.programation}\n" \
@@ -38,9 +37,8 @@ class ParanaguaMooredShip(MooredShip):
                f"Mooring: {self.mooring}\n" \
                f"Arrival: {self.arrival}\n" \
                f"ETS: {self.ets}\n" \
-               f"Tons per day: {self.tons_per_day}\n" \
-               f"Predict: {self.predict}\n" \
+               f"Undocking: {self.undocking}\n" \
+               f"Expected: {self.expected}\n" \
                f"Realized: {self.realized}\n" \
-               f"Operator balance: {self.operator_balance}\n" \
-               f"Total balance: {self.total_balance}\n" \
+               f"Balance: {self.balance}\n" \
                f"--------------------------\n"

@@ -4,7 +4,13 @@ import pandas as pd
 import os
 
 from PortDataScraper import PortDataScraper
-from ParanaguaMooredShip import ParanaguaMooredShip
+from ParanaguaShips.ParanaguaMooredShip import ParanaguaMooredShip
+from ParanaguaShips.ParanaguaProgrammedShip import ParanaguaProgrammedShip
+from ParanaguaShips.ParanaguaRedockingShip import ParanaguaRedockingShip
+from ParanaguaShips.ParanaguaOffshoreShip import ParanaguaOffshoreShip
+from ParanaguaShips.ParanaguaExpectedShip import ParanaguaExpectedShip
+from ParanaguaShips.ParanaguaSupportShip import ParanaguaSupportShip
+from ParanaguaShips.ParanaguaDispatchedShip import ParanaguaDispatchedShip
 
 class ParanaguaDataScraper(PortDataScraper):
     def __init__(self, url):
@@ -20,7 +26,6 @@ class ParanaguaDataScraper(PortDataScraper):
         soup = BeautifulSoup(content, 'lxml')
 
         tables = soup.find_all('table', class_="table table-bordered table-striped table-hover")
-        count_tables = 0
 
         for table in tables:
             table_header = table.find('thead')
@@ -126,24 +131,10 @@ class ParanaguaDataScraper(PortDataScraper):
 
                         count_td += 1
                     
-                    print(f"Id: {id}\n" \
-                        f"Programation: {programation}\n" \
-                        f"DUV: {duv}\n" \
-                        f"Cradle: {cradle}\n" \
-                        f"Ship: {ship}\n" \
-                        f"IMO: {imo}\n" \
-                        f"LOA: {loa}\n" \
-                        f"DWT: {dwt}\n" \
-                        f"Board: {board}\n" \
-                        f"Direction: {direction}\n" \
-                        f"Agency: {agency}\n" \
-                        f"Operator: {operator}\n" \
-                        f"Goods: {goods}\n" \
-                        f"Arrival: {arrival}\n" \
-                        f"ETB: {etb}\n" \
-                        f"ETS: {ets}\n" \
-                        f"Expected: {expected}\n" \
-                        f"--------------------------\n")
+                    new_paranagua_programmed_ship = ParanaguaProgrammedShip(programation, duv, cradle, ship, imo, loa, dwt, board,
+                                                                            direction, agency, operator, goods, arrival, etb, ets,
+                                                                            expected)
+                    print(new_paranagua_programmed_ship)
                     
             elif table_header.find('th', text="AO LARGO PARA REATRACAÇÃO") is not None:
                 print(f"Scraping data from table 'AO LARGO PARA REATRACAÇÃO'...")
@@ -194,27 +185,10 @@ class ParanaguaDataScraper(PortDataScraper):
                         
                         count_td += 1
                     
-                    print(f"Programation: {programation}\n" \
-                        f"DUV: {duv}\n" \
-                        f"Cradle: {cradle}\n" \
-                        f"Ship: {ship}\n" \
-                        f"IMO: {imo}\n" \
-                        f"LOA: {loa}\n" \
-                        f"DWT: {dwt}\n" \
-                        f"Board: {board}\n" \
-                        f"Direction: {direction}\n" \
-                        f"Agency: {agency}\n" \
-                        f"Operator: {operator}\n" \
-                        f"Goods: {goods}\n" \
-                        f"Mooring: {mooring}\n" \
-                        f"Arrival: {arrival}\n" \
-                        f"ETS: {ets}\n" \
-                        f"Undocking: {undocking}\n" \
-                        f"Expected: {expected}\n" \
-                        f"Realized: {realized}\n" \
-                        f"Balance: {balance}\n" \
-                        f"--------------------------\n")
-                            
+                    new_paranagua_redocking_ship = ParanaguaRedockingShip(programation, duv, cradle, ship, imo, loa, dwt, board,
+                                                                            direction, agency, operator, goods, mooring, arrival, ets,
+                                                                            undocking, expected, realized, balance)
+                    print(new_paranagua_redocking_ship) 
             
             elif table_header.find('th', text="AO LARGO") is not None:
                 print(f"Scraping data from table 'AO LARGO'...")
@@ -261,24 +235,10 @@ class ParanaguaDataScraper(PortDataScraper):
                         
                         count_td += 1
                     
-                    print(f"Programation: {programation}\n" \
-                        f"DUV: {duv}\n" \
-                        f"Cradle: {cradle}\n" \
-                        f"Ship: {ship}\n" \
-                        f"IMO: {imo}\n" \
-                        f"LOA: {loa}\n" \
-                        f"DWT: {dwt}\n" \
-                        f"Direction: {direction}\n" \
-                        f"Agency: {agency}\n" \
-                        f"Operator: {operator}\n" \
-                        f"Goods: {goods}\n" \
-                        f"ETA: {eta}\n" \
-                        f"ETS: {ets}\n" \
-                        f"Arrival: {arrival}\n" \
-                        f"Expected: {expected}\n" \
-                        f"Calculated arrival: {cal_arrival}\n" \
-                        f"Calculated departure: {cal_departure}\n" \
-                        f"--------------------------\n")
+                    new_paranagua_offshore_ship = ParanaguaOffshoreShip(programation, duv, cradle, ship, imo, loa, dwt, direction,
+                                                                            agency, operator, goods, eta, ets, arrival, expected,
+                                                                            cal_arrival, cal_departure)
+                    print(new_paranagua_offshore_ship)
             
             elif table_header.find('th', text="ESPERADOS") is not None:
                 print(f"Scraping data from table 'ESPERADOS'...")
@@ -323,23 +283,10 @@ class ParanaguaDataScraper(PortDataScraper):
                         
                         count_td += 1
                     
-                    print(f"Programation: {programation}\n" \
-                        f"DUV: {duv}\n" \
-                        f"Cradle: {cradle}\n" \
-                        f"Ship: {ship}\n" \
-                        f"IMO: {imo}\n" \
-                        f"LOA: {loa}\n" \
-                        f"DWT: {dwt}\n" \
-                        f"Direction: {direction}\n" \
-                        f"Agency: {agency}\n" \
-                        f"Operator: {operator}\n" \
-                        f"Goods: {goods}\n" \
-                        f"ETA: {eta}\n" \
-                        f"ETS: {ets}\n" \
-                        f"Expected: {expected}\n" \
-                        f"Calculated arrival: {cal_arrival}\n" \
-                        f"Calculated departure: {cal_departure}\n" \
-                        f"--------------------------\n")
+                    new_paranagua_expected_ship = ParanaguaExpectedShip(programation, duv, cradle, ship, imo, loa, dwt, direction,
+                                                                            agency, operator, goods, eta, ets, expected, cal_arrival,
+                                                                            cal_departure)
+                    print(new_paranagua_expected_ship)
 
             elif table_header.find('th', text="APOIO PORTUÁRIO / OUTROS") is not None:
                 print(f"Scraping data from table 'APOIO PORTUÁRIO / OUTROS'...")
@@ -378,20 +325,9 @@ class ParanaguaDataScraper(PortDataScraper):
                         
                         count_td += 1
                     
-                    print(f"Programation: {programation}\n" \
-                        f"DUV: {duv}\n" \
-                        f"Cradle: {cradle}\n" \
-                        f"Ship: {ship}\n" \
-                        f"IMO: {imo}\n" \
-                        f"LOA: {loa}\n" \
-                        f"DWT: {dwt}\n" \
-                        f"Operation type: {operation_type}\n" \
-                        f"Status: {status}\n" \
-                        f"Agency: {agency}\n" \
-                        f"Operator: {operator}\n" \
-                        f"Arrival: {arrival}\n" \
-                        f"ETS: {ets}\n" \
-                        f"--------------------------\n")
+                    new_paranagua_suport_ship = ParanaguaSupportShip(programation, duv, cradle, ship, imo, loa, dwt, operation_type,
+                                                                        status, agency, operator, arrival, ets)
+                    print(new_paranagua_suport_ship)
             
             
             elif table_header.find('th', text="DESPACHADOS") is not None:
@@ -437,20 +373,7 @@ class ParanaguaDataScraper(PortDataScraper):
                         
                         count_td += 1
                     
-                    print(f"Programation: {programation}\n" \
-                        f"DUV: {duv}\n" \
-                        f"Cradle: {cradle}\n" \
-                        f"Ship: {ship}\n" \
-                        f"IMO: {imo}\n" \
-                        f"LOA: {loa}\n" \
-                        f"DWT: {dwt}\n" \
-                        f"Board: {board}\n" \
-                        f"Direction: {direction}\n" \
-                        f"Agency: {agency}\n" \
-                        f"Operator: {operator}\n" \
-                        f"Goods: {goods}\n" \
-                        f"Arrival: {arrival}\n" \
-                        f"ETS: {ets}\n" \
-                        f"Undocking: {undocking}\n" \
-                        f"Predict: {predict}\n" \
-                        f"--------------------------\n")
+                    new_paranagua_dispatched_ship = ParanaguaDispatchedShip(programation, duv, cradle, ship, imo, loa, dwt, board,
+                                                                            direction, agency, operator, goods, arrival, ets,
+                                                                            undocking, predict)
+                    print(new_paranagua_dispatched_ship)
