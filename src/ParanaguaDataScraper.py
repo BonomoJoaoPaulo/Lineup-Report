@@ -1,9 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
-import os
+import re
 
-from PortDataScraper import PortDataScraper
 from ParanaguaShips.ParanaguaMooredShip import ParanaguaMooredShip
 from ParanaguaShips.ParanaguaProgrammedShip import ParanaguaProgrammedShip
 from ParanaguaShips.ParanaguaRedockingShip import ParanaguaRedockingShip
@@ -12,13 +11,13 @@ from ParanaguaShips.ParanaguaExpectedShip import ParanaguaExpectedShip
 from ParanaguaShips.ParanaguaSupportShip import ParanaguaSupportShip
 from ParanaguaShips.ParanaguaDispatchedShip import ParanaguaDispatchedShip
 
-class ParanaguaDataScraper(PortDataScraper):
-    def __init__(self, url):
-        super().__init__(url)
-        #self.data = self.scrap_data()
+class ParanaguaDataScraper():
+    def __init__(self, ships_list, url):
+        self.url = url
+        self.ships_list = ships_list
 
     def scrap_data(self):
-        print("Scraping data from Paranaguá...")
+        print("Scraping data from Paranaguá port...")
         website = "https://www.appaweb.appa.pr.gov.br/appaweb/pesquisa.aspx?WCI=relLineUpRetroativo"
         response = requests.get(website)
         content = response.text
@@ -32,7 +31,7 @@ class ParanaguaDataScraper(PortDataScraper):
             table_body = table.find('tbody')
 
             if table_header.find('th', text="ATRACADOS") is not None:
-                print(f"Scraping data from table 'ATRACADOS'...")
+                #print(f"Scraping data from table 'ATRACADOS'...")
                 for ship in table_body.find_all('tr'):
                     count_td = 0
                     for data_ship in ship.find_all('td'):
@@ -70,7 +69,11 @@ class ParanaguaDataScraper(PortDataScraper):
                             case 16:
                                 tons_per_day = data_ship.get_text()
                             case 17:
-                                predict = data_ship.get_text()
+                                # Substituir "," por "." para converter para float
+                                string_without_commas = data_ship.get_text().replace(",", ".")
+                                # Remover pontos
+                                final_string = string_without_commas.replace(".", "")
+                                expected = float(final_string.split()[0])
                             case 18:
                                 realized = data_ship.get_text()
                             case 19:
@@ -84,12 +87,14 @@ class ParanaguaDataScraper(PortDataScraper):
                     
                     new_paranagua_moored_ship = ParanaguaMooredShip(programation, duv, cradle, ship, imo, loa, dwt, board,
                                                                     direction, agency, operator, goods, mooring, arrival, ets,
-                                                                    tons_per_day, predict, realized, operator_balance, total_balance)
+                                                                    tons_per_day, expected, realized, operator_balance, total_balance)
 
-                    print(new_paranagua_moored_ship)
+                    self.ships_list.add_ship(new_paranagua_moored_ship)
+
+                    #print(new_paranagua_moored_ship)
 
             elif table_header.find('th', text="PROGRAMADOS") is not None:
-                print(f"Scraping data from table 'PROGRAMADOS'...")
+                #print(f"Scraping data from table 'PROGRAMADOS'...")
                 for ship in table_body.find_all('tr'):
                     count_td = 0
                     for data_ship in ship.find_all('td'):
@@ -125,7 +130,11 @@ class ParanaguaDataScraper(PortDataScraper):
                             case 15:
                                 ets = data_ship.get_text()
                             case 16:
-                                expected = data_ship.get_text()
+                                # Substituir "," por "." para converter para float
+                                string_without_commas = data_ship.get_text().replace(",", ".")
+                                # Remover pontos
+                                final_string = string_without_commas.replace(".", "")
+                                expected = float(final_string.split()[0])
                             case default:
                                 pass
 
@@ -134,10 +143,12 @@ class ParanaguaDataScraper(PortDataScraper):
                     new_paranagua_programmed_ship = ParanaguaProgrammedShip(programation, duv, cradle, ship, imo, loa, dwt, board,
                                                                             direction, agency, operator, goods, arrival, etb, ets,
                                                                             expected)
-                    print(new_paranagua_programmed_ship)
+                    self.ships_list.add_ship(new_paranagua_programmed_ship)
+
+                    #print(new_paranagua_programmed_ship)
                     
             elif table_header.find('th', text="AO LARGO PARA REATRACAÇÃO") is not None:
-                print(f"Scraping data from table 'AO LARGO PARA REATRACAÇÃO'...")
+                #print(f"Scraping data from table 'AO LARGO PARA REATRACAÇÃO'...")
                 for ship in table_body.find_all('tr'):
                     count_td = 0
                     for data_ship in ship.find_all('td'):
@@ -175,7 +186,11 @@ class ParanaguaDataScraper(PortDataScraper):
                             case 16:
                                 undocking = data_ship.get_text()
                             case 17:
-                                expected = data_ship.get_text()
+                                # Substituir "," por "." para converter para float
+                                string_without_commas = data_ship.get_text().replace(",", ".")
+                                # Remover pontos
+                                final_string = string_without_commas.replace(".", "")
+                                expected = float(final_string.split()[0])
                             case 18:
                                 realized = data_ship.get_text()
                             case 19:
@@ -188,10 +203,12 @@ class ParanaguaDataScraper(PortDataScraper):
                     new_paranagua_redocking_ship = ParanaguaRedockingShip(programation, duv, cradle, ship, imo, loa, dwt, board,
                                                                             direction, agency, operator, goods, mooring, arrival, ets,
                                                                             undocking, expected, realized, balance)
-                    print(new_paranagua_redocking_ship) 
+                    self.ships_list.add_ship(new_paranagua_redocking_ship)
+                    
+                    #print(new_paranagua_redocking_ship) 
             
             elif table_header.find('th', text="AO LARGO") is not None:
-                print(f"Scraping data from table 'AO LARGO'...")
+                #print(f"Scraping data from table 'AO LARGO'...")
                 for ship in table_body.find_all('tr'):
                     count_td = 0
                     for data_ship in ship.find_all('td'):
@@ -225,7 +242,11 @@ class ParanaguaDataScraper(PortDataScraper):
                             case 14:
                                 arrival = data_ship.get_text()
                             case 15:
-                                expected = data_ship.get_text()
+                                # Substituir "," por "." para converter para float
+                                string_without_commas = data_ship.get_text().replace(",", ".")
+                                # Remover pontos
+                                final_string = string_without_commas.replace(".", "")
+                                expected = float(final_string.split()[0])
                             case 16:
                                 cal_arrival = data_ship.get_text()
                             case 17:
@@ -238,10 +259,12 @@ class ParanaguaDataScraper(PortDataScraper):
                     new_paranagua_offshore_ship = ParanaguaOffshoreShip(programation, duv, cradle, ship, imo, loa, dwt, direction,
                                                                             agency, operator, goods, eta, ets, arrival, expected,
                                                                             cal_arrival, cal_departure)
-                    print(new_paranagua_offshore_ship)
+                    self.ships_list.add_ship(new_paranagua_offshore_ship)
+                    
+                    #print(new_paranagua_offshore_ship)
             
             elif table_header.find('th', text="ESPERADOS") is not None:
-                print(f"Scraping data from table 'ESPERADOS'...")
+                #print(f"Scraping data from table 'ESPERADOS'...")
                 for ship in table_body.find_all('tr'):
                     count_td = 0
                     for data_ship in ship.find_all('td'):
@@ -273,7 +296,11 @@ class ParanaguaDataScraper(PortDataScraper):
                             case 13:
                                 ets = data_ship.get_text()
                             case 14:
-                                expected = data_ship.get_text()
+                                # Substituir "," por "." para converter para float
+                                string_without_commas = data_ship.get_text().replace(",", ".")
+                                # Remover pontos
+                                final_string = string_without_commas.replace(".", "")
+                                expected = float(final_string.split()[0])
                             case 15:
                                 cal_arrival = data_ship.get_text()
                             case 16:
@@ -286,10 +313,12 @@ class ParanaguaDataScraper(PortDataScraper):
                     new_paranagua_expected_ship = ParanaguaExpectedShip(programation, duv, cradle, ship, imo, loa, dwt, direction,
                                                                             agency, operator, goods, eta, ets, expected, cal_arrival,
                                                                             cal_departure)
-                    print(new_paranagua_expected_ship)
+                    self.ships_list.add_ship(new_paranagua_expected_ship)
+                    
+                    #print(new_paranagua_expected_ship)
 
             elif table_header.find('th', text="APOIO PORTUÁRIO / OUTROS") is not None:
-                print(f"Scraping data from table 'APOIO PORTUÁRIO / OUTROS'...")
+                #print(f"Scraping data from table 'APOIO PORTUÁRIO / OUTROS'...")
                 for ship in table_body.find_all('tr'):
                     count_td = 0
                     for data_ship in ship.find_all('td'):
@@ -327,11 +356,11 @@ class ParanaguaDataScraper(PortDataScraper):
                     
                     new_paranagua_suport_ship = ParanaguaSupportShip(programation, duv, cradle, ship, imo, loa, dwt, operation_type,
                                                                         status, agency, operator, arrival, ets)
-                    print(new_paranagua_suport_ship)
+                    # print(new_paranagua_suport_ship)
             
             
             elif table_header.find('th', text="DESPACHADOS") is not None:
-                print(f"Scraping data from table 'DESPACHADOS'...")
+                #print(f"Scraping data from table 'DESPACHADOS'...")
                 for ship in table_body.find_all('tr'):
                     count_td = 0
                     for data_ship in ship.find_all('td'):
@@ -367,7 +396,11 @@ class ParanaguaDataScraper(PortDataScraper):
                             case 15:
                                 undocking = data_ship.get_text()
                             case 16:
-                                predict = data_ship.get_text()
+                                # Substituir "," por "." para converter para float
+                                string_without_commas = data_ship.get_text().replace(",", ".")
+                                # Remover pontos
+                                final_string = string_without_commas.replace(".", "")
+                                expected = float(final_string.split()[0])
                             case default:
                                 pass
                         
@@ -375,5 +408,7 @@ class ParanaguaDataScraper(PortDataScraper):
                     
                     new_paranagua_dispatched_ship = ParanaguaDispatchedShip(programation, duv, cradle, ship, imo, loa, dwt, board,
                                                                             direction, agency, operator, goods, arrival, ets,
-                                                                            undocking, predict)
-                    print(new_paranagua_dispatched_ship)
+                                                                            undocking, expected)
+                    self.ships_list.add_ship(new_paranagua_dispatched_ship)
+                    
+                    #print(new_paranagua_dispatched_ship)

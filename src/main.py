@@ -4,11 +4,13 @@ import pandas as pd
 
 from ParanaguaDataScraper import ParanaguaDataScraper as pds
 from SantosDataScraper import SantosDataScrapper as sds
+from ParanaguaShips.ParanaguaShipsList import ParanaguaShipsList
 from SantosShips.SantosMultiOperationShip import SantosMultiOperationShip
 from SantosShips.SantosShipsList import SantosShipsList
 
-#paranagua_data_scraper = pds("https://www.appaweb.appa.pr.gov.br/appaweb/pesquisa.aspx?WCI=relLineUpRetroativo")
-#paranagua_data_scraper.scrap_data()
+paranagua_ships_list = ParanaguaShipsList()
+paranagua_data_scraper = pds(paranagua_ships_list, "https://www.appaweb.appa.pr.gov.br/appaweb/pesquisa.aspx?WCI=relLineUpRetroativo")
+paranagua_data_scraper.scrap_data()
 
 santos_ships_list = SantosShipsList()
 santos_data_scraper = sds(santos_ships_list, "https://www.portodesantos.com.br/informacoes-operacionais/operacoes-portuarias/navegacao-e-movimento-de-navios/navios-esperados-carga/")
@@ -19,15 +21,21 @@ def export_all_data_as_csv():
     santos_csv_file = open("santos_all_ships.csv", "w")
     santos_csv_file.write(santos_data_scraper.ships_list.export_as_csv())
     santos_csv_file.close()
+    paranagua_csv_file = open("paranagua_all_ships.csv", "w")
+    paranagua_csv_file.write(paranagua_data_scraper.ships_list.export_as_csv())
+    paranagua_csv_file.close()
 
 
 def export_all_data_as_json():
     santos_json_file = open("santos_all_ships.json", "w")
     santos_json_file.write(santos_data_scraper.ships_list.export_as_json())
     santos_json_file.close()
+    paranagua_json_file = open("paranagua_all_ships.json", "w")
+    paranagua_json_file.write(paranagua_data_scraper.ships_list.export_as_json())
+    paranagua_json_file.close()
 
 
-def filter_by_goods(goods):
+def santos_filter_by_goods(goods):
     filtered_ships = []
     for ship in santos_data_scraper.ships_list.ships:
         if type(ship) == SantosMultiOperationShip:
@@ -40,7 +48,7 @@ def filter_by_goods(goods):
     return filtered_ships
 
 
-def filter_by_operation(operation):
+def santos_filter_by_operation(operation):
     filtered_ships = []
     for ship in santos_data_scraper.ships_list.ships:
         if type(ship) == SantosMultiOperationShip:
@@ -53,7 +61,7 @@ def filter_by_operation(operation):
     return filtered_ships
 
 
-def export_filtered_data_as_xlsx():
+def santos_export_filtered_data_as_xlsx():
     goods_import_list = []
     goods_export_list = []
     goods_ship_import_counter_list = []
@@ -121,23 +129,6 @@ def export_filtered_data_as_xlsx():
                 else:
                     goods_ship_export_counter_list[goods_export_list.index(ship.goods)] += 1
                     goods_ship_export_volume_list[goods_export_list.index(ship.goods)] += float(ship.weight)
-    
-    #print("GOODS_IMPORT_lIST: ", goods_import_list)
-    #print("GOODS_IMPORT_lIST: ", len(goods_import_list))
-    #print("GOODS_EXPORT_lIST: ", goods_export_list)
-    #print("GOODS_EXPORT_lIST: ", len(goods_export_list))
-    #print("GOODS_IMPORT_COUNTER_lIST: ", goods_ship_import_counter_list)
-    #print("GOODS_IMPORT_COUNTER_lIST: ", len(goods_ship_import_counter_list))
-    #print("GOODS_EXPORT_COUNTER_lIST: ", goods_ship_export_counter_list)
-    #print("GOODS_EXPORT_COUNTER_lIST: ", len(goods_ship_export_counter_list))
-    #print("GOODS_IMPORT_PORT_lIST: " ,goods_ship_import_port_list)
-    #print("GOODS_IMPORT_PORT_lIST: ", len(goods_ship_import_port_list))
-    #print("GOODS_EXPORT_PORT_lIST: ",goods_ship_export_port_list)
-    #print("GOODS_EXPORT_PORT_lIST: ",len(goods_ship_export_port_list))
-    #print("GOODS_IMPORT_VOLUME_lIST: ",goods_ship_import_volume_list)
-    #print("GOODS_IMPORT_VOLUME_lIST: ",len(goods_ship_import_volume_list))
-    #print("GOODS_EXPORT_VOLUME_lIST: ",goods_ship_export_volume_list)
-    #print("GOODS_EXPORT_VOLUME_lIST: ",len(goods_ship_export_volume_list))
 
     import_data = {
         "Goods": goods_import_list,
@@ -162,6 +153,85 @@ def export_filtered_data_as_xlsx():
 
     print(f"Arquivo Excel '{output_file}' criado com sucesso.")
 
+
+def paranagua_export_filtered_data_as_xlsx():
+    goods_import_list = []
+    goods_export_list = []
+    goods_imp_exp_list = []
+    goods_ship_import_counter_list = []
+    goods_ship_export_counter_list = []
+    goods_ship_imp_exp_counter_list = []
+    goods_ship_import_expected_volume_list = []
+    goods_ship_export_expected_volume_list = []
+    goods_ship_imp_exp_expected_volume_list = []
+    goods_ship_import_port_list = []
+    goods_ship_export_port_list = []
+    goods_ship_imp_exp_port_list = []
+
+    for ship in paranagua_data_scraper.ships_list.ships:
+        try:
+            print("SHIP: ", ship)
+            if ship.direction == "Imp":
+                if ship.goods not in goods_import_list:
+                    goods_import_list.append(ship.goods)
+                    goods_ship_import_counter_list.append(1)
+                    goods_ship_import_expected_volume_list.append(float(ship.expected))
+                    goods_ship_import_port_list.append("Paranaguá")
+                else:
+                    goods_ship_import_counter_list[goods_import_list.index(ship.goods)] += 1
+                    goods_ship_import_expected_volume_list[goods_import_list.index(ship.goods)] += float(ship.expected)
+            elif ship.direction == "Exp":
+                if ship.goods not in goods_export_list:
+                    goods_export_list.append(ship.goods)
+                    goods_ship_export_counter_list.append(1)
+                    goods_ship_export_expected_volume_list.append(float(ship.expected))
+                    goods_ship_export_port_list.append("Paranaguá")
+                else:
+                    goods_ship_export_counter_list[goods_export_list.index(ship.goods)] += 1
+                    goods_ship_export_expected_volume_list[goods_export_list.index(ship.goods)] += float(ship.expected)
+            elif ship.direction == "Imp/Exp":
+                if ship.goods not in goods_imp_exp_list:
+                    goods_imp_exp_list.append(ship.goods)
+                    goods_ship_imp_exp_counter_list.append(1)
+                    goods_ship_imp_exp_expected_volume_list.append(float(ship.expected))
+                    goods_ship_imp_exp_port_list.append("Paranaguá")
+                else:
+                    goods_ship_imp_exp_counter_list[goods_imp_exp_list.index(ship.goods)] += 1
+                    goods_ship_imp_exp_expected_volume_list[goods_imp_exp_list.index(ship.goods)] += float(ship.expected)
+                pass
+        except:
+            continue
+
+    import_data = {
+    "Goods": goods_import_list,
+    "Ships Number": goods_ship_import_counter_list,
+    "Goods Import Expected Volume": goods_ship_import_expected_volume_list,
+    "Port": goods_ship_import_port_list,
+    }
+    export_data = {
+        "Goods": goods_export_list,
+        "Ships Number": goods_ship_export_counter_list,
+        "Goods Export Expected Volume": goods_ship_export_expected_volume_list,
+        "Port": goods_ship_export_port_list,
+    }
+    imp_exp_data = {
+        "Goods": goods_imp_exp_list,
+        "Ships Number": goods_ship_imp_exp_counter_list,
+        "Goods Import/Export Expected Volume": goods_ship_imp_exp_expected_volume_list,
+        "Port": goods_ship_imp_exp_port_list,
+    }
+    export_df = pd.DataFrame(export_data)
+    import_df = pd.DataFrame(import_data)
+    imp_exp_df = pd.DataFrame(imp_exp_data)
+
+    # Escrever os DataFrames em um único arquivo Excel com duas abas
+    output_file = f"paranagua_ships_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
+    with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
+        import_df.to_excel(writer, sheet_name='Import', index=False)
+        export_df.to_excel(writer, sheet_name='Export', index=False)
+        imp_exp_df.to_excel(writer, sheet_name='Import and Export', index=False)
+
+    print(f"Arquivo Excel '{output_file}' criado com sucesso.")
 
 
 def ask_user_want_to_close():
@@ -212,7 +282,7 @@ while True:
 
             case 4:
                 goods_selection = input("Digite a carga desejada: ")
-                filtered_ships = filter_by_goods(goods_selection)
+                filtered_ships = santos_filter_by_goods(goods_selection)
                 print(f"Total de navios de {goods_selection}: {len(filtered_ships)}")
 
             case 5:
@@ -221,12 +291,13 @@ while True:
                     print("Opção inválida!\n")
                     continue
                 else:   
-                    filtered_ships = filter_by_operation(operation_selection)
+                    filtered_ships = santos_filter_by_operation(operation_selection)
                     print(f"Total de navios de {operation_selection}: {len(filtered_ships)}")
             
             case 6:
-                print("Exportando dados por carga/operacao/porto como XLSX...")
-                export_filtered_data_as_xlsx()
+                print("Exportando dados dos portos de Santos e Paranagua por carga/operacao/ como XLSX...")
+                santos_export_filtered_data_as_xlsx()
+                paranagua_export_filtered_data_as_xlsx()
 
             case 7:
                 print("Encerrando o sistema...")
