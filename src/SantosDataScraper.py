@@ -7,12 +7,15 @@ from PortDataScraper import PortDataScraper
 from SantosShips.SantosShip import SantosShip
 from SantosShips.SantosSingleOperationShip import SantosSingleOperationShip
 from SantosShips.SantosMultiOperationShip import SantosMultiOperationShip
+from SantosShips.SantosShipsList import SantosShipsList
 
-
-class SantosDataScrapper(PortDataScraper):
+class SantosDataScrapper():
     def __init__(self, url):
-        super().__init__(url)
-        #self.data = self.scrap_data()
+        print("SantosDataScrapper instance being created...")
+        #super().__init__(url)
+        print("SantosDataScrapper instance created.")
+        self.ships_list = SantosShipsList()
+        print("SantosDataScrapper instance created.")
 
     def scrap_data(self):
         print("Scraping data from Santos port...")
@@ -50,7 +53,7 @@ class SantosDataScrapper(PortDataScraper):
                                 # The text after 'br' is the draft value
                                 ship_draft = br_tag.next_sibling.strip()
                             else:
-                                ship_length = ship_data.text
+                                ship_lenght = ship_data.text
                                 ship_draft = None
                         case 3:
                             ship_navigation = ship_data.text
@@ -107,4 +110,6 @@ class SantosDataScrapper(PortDataScraper):
                                                 ship_goods, ship_weight, ship_voyage, ship_duv, ship_priority,
                                                 ship_terminal, ship_type)
 
-                print(new_santos_ship)
+                self.ships_list.add_ship(new_santos_ship)
+
+                #print(new_santos_ship)

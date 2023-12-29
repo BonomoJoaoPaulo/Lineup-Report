@@ -1,6 +1,6 @@
 class SantosShip():
     def __init__(self, ship: str, flag: str, lenght: float, draft: float, navigation: str, arrival: str, notice: str, 
-                 office: str, voyage: str, duv: int, priority: str, terminal: str, ship_type):
+                 office: str, voyage: str, duv: int, priority: str, terminal: str, ship_type) -> None:
         self.ship = ship
         self.flag = flag
         self.lenght = lenght
@@ -14,8 +14,14 @@ class SantosShip():
         self.priority = priority
         self.terminal = terminal
         self.ship_type = ship_type
-    
-    def __str__(self):
+
+    def export_as_dict(self):
+        pass
+
+    def export_as_csv_line(self):
+        pass
+
+    def __str__(self) -> str:
         return  f"Santos Ship Description - \n" \
                 f"Ship: {self.ship}\n" \
                 f"Flag: {self.flag}\n" \
