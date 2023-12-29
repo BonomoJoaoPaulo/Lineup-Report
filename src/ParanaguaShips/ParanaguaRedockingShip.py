@@ -1,7 +1,7 @@
-from ParanaguaShips.MooredShip import MooredShip
+from ParanaguaShips.ParanaguaShip import ParanaguaShip
 
 
-class ParanaguaRedockingShip(MooredShip):
+class ParanaguaRedockingShip(ParanaguaShip):
     def __init__(self, programation: int, duv: int, cradle: str, ship: str, imo: str, loa: float, dwt: float,
                  board: str, direction: str, agency: str, operator: str, goods: str, mooring: str,
                  arrival: str, ets: str, undocking: str, expected: float, realized: float, balance: float):

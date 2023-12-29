@@ -1,4 +1,4 @@
-class MooredShip():
+class ParanaguaShip():
     def __init__(self, ship: str, agency: str, arrival: str, goods: str, duv: int):
         self.ship = ship
         self.agency = agency
