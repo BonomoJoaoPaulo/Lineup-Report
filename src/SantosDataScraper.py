@@ -10,12 +10,9 @@ from SantosShips.SantosMultiOperationShip import SantosMultiOperationShip
 from SantosShips.SantosShipsList import SantosShipsList
 
 class SantosDataScrapper():
-    def __init__(self, url):
-        print("SantosDataScrapper instance being created...")
-        #super().__init__(url)
-        print("SantosDataScrapper instance created.")
-        self.ships_list = SantosShipsList()
-        print("SantosDataScrapper instance created.")
+    def __init__(self, ship_list, url):
+        self.url = url
+        self.ships_list = ship_list
 
     def scrap_data(self):
         print("Scraping data from Santos port...")
@@ -78,13 +75,21 @@ class SantosDataScrapper():
                                 ship_second_goods = br_tag.next_sibling.strip()
                             else:
                                 ship_goods = ship_data.text
+                                if ship_goods == "CONTEINERES CHEIOSCONTEINERES CHEIOS":
+                                    ship_goods = "CONTEINERES CHEIOS"
                         case 9:
                             if multiple_operation:
                                 br_tag = ship_data.find('br')
                                 ship_first_weight = br_tag.previous_sibling.strip()
                                 ship_second_weight = br_tag.next_sibling.strip()
+                                if ship_first_weight == "":
+                                    ship_first_weight = "0"
+                                if ship_second_weight == "":
+                                    ship_second_weight = "0"
                             else:
                                 ship_weight = ship_data.text
+                                if ship_weight == "":
+                                    ship_weight = "0"
                         case 10:
                             ship_voyage = ship_data.text
                         case 11:
@@ -94,7 +99,7 @@ class SantosDataScrapper():
                         case 13:
                             ship_terminal = ship_data.text
                         case default:
-                            print("Nothing to do with column ", count_td, "\n")
+                            pass
                     
                     count_td += 1
 
