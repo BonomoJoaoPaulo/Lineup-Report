@@ -18,19 +18,19 @@ santos_data_scraper.scrap_data()
 
 
 def export_all_data_as_csv():
-    santos_csv_file = open("santos_all_ships.csv", "w")
+    santos_csv_file = open("../output/csv/santos_all_ships.csv", "w")
     santos_csv_file.write(santos_data_scraper.ships_list.export_as_csv())
     santos_csv_file.close()
-    paranagua_csv_file = open("paranagua_all_ships.csv", "w")
+    paranagua_csv_file = open("../output/csv/paranagua_all_ships.csv", "w")
     paranagua_csv_file.write(paranagua_data_scraper.ships_list.export_as_csv())
     paranagua_csv_file.close()
 
 
 def export_all_data_as_json():
-    santos_json_file = open("santos_all_ships.json", "w")
+    santos_json_file = open("../output/json/santos_all_ships.json", "w")
     santos_json_file.write(santos_data_scraper.ships_list.export_as_json())
     santos_json_file.close()
-    paranagua_json_file = open("paranagua_all_ships.json", "w")
+    paranagua_json_file = open("../output/json/paranagua_all_ships.json", "w")
     paranagua_json_file.write(paranagua_data_scraper.ships_list.export_as_json())
     paranagua_json_file.close()
 
@@ -43,19 +43,6 @@ def santos_filter_by_goods(goods):
                 filtered_ships.append(ship)
         else:
             if ship.goods == goods:
-                filtered_ships.append(ship)
-
-    return filtered_ships
-
-
-def santos_filter_by_operation(operation):
-    filtered_ships = []
-    for ship in santos_data_scraper.ships_list.ships:
-        if type(ship) == SantosMultiOperationShip:
-            if ship.first_operation == operation or ship.second_operation == operation:
-                filtered_ships.append(ship)
-        else:
-            if ship.operation == operation:
                 filtered_ships.append(ship)
 
     return filtered_ships
@@ -146,7 +133,7 @@ def santos_export_filtered_data_as_xlsx():
     import_df = pd.DataFrame(import_data)
 
     # Escrever os DataFrames em um único arquivo Excel com duas abas
-    output_file = f"santos_ships_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
+    output_file = f"../output/xlsx/santos_ships_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
     with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
         import_df.to_excel(writer, sheet_name='Import', index=False)
         export_df.to_excel(writer, sheet_name='Export', index=False)
@@ -170,7 +157,6 @@ def paranagua_export_filtered_data_as_xlsx():
 
     for ship in paranagua_data_scraper.ships_list.ships:
         try:
-            print("SHIP: ", ship)
             if ship.direction == "Imp":
                 if ship.goods not in goods_import_list:
                     goods_import_list.append(ship.goods)
@@ -225,7 +211,7 @@ def paranagua_export_filtered_data_as_xlsx():
     imp_exp_df = pd.DataFrame(imp_exp_data)
 
     # Escrever os DataFrames em um único arquivo Excel com duas abas
-    output_file = f"paranagua_ships_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
+    output_file = f"../output/xlsx/paranagua_ships_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
     with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
         import_df.to_excel(writer, sheet_name='Import', index=False)
         export_df.to_excel(writer, sheet_name='Export', index=False)
@@ -250,18 +236,17 @@ LINEUP DE NAVIOS - PORTOS DE SANTOS E PARANAGUÁ\n
 1 - Exportar dados completos como CSV
 2 - Exportar dados completos como JSON
 3 - Exportar dados completos como CSV e JSON
-4 - Filtrar navios por carga
-5 - Filtrar navios por operação (importação/exportação)
-6 - Exportar dados por carga/operacao/porto como XLSX
-7 - Sair
+4 - Filtrar os navios de Santos por carga
+5 - Exportar dados por carga/operacao/porto como XLSX
+6 - Sair
 -----------------------------------------------
 """
 
 while True:
-    print("Iniciando o sistema...\n")
+    print("Iniciando o sistema...")
     print(menu_string)
     option = input("Digite a opção desejada: ")
-    if not(int(option)) or int(option) < 1 or int(option) > 7:
+    if not(int(option)) or int(option) < 1 or int(option) > 6:
         print("Opção inválida!\n"
               "Retornando ao menu principal...")
         continue
@@ -284,22 +269,13 @@ while True:
                 goods_selection = input("Digite a carga desejada: ")
                 filtered_ships = santos_filter_by_goods(goods_selection)
                 print(f"Total de navios de {goods_selection}: {len(filtered_ships)}")
-
+     
             case 5:
-                operation_selection = input("Digite a operação desejada (IMP/EXP): ")
-                if operation_selection.lower() != "imp" and operation_selection.lower() != "exp":
-                    print("Opção inválida!\n")
-                    continue
-                else:   
-                    filtered_ships = santos_filter_by_operation(operation_selection)
-                    print(f"Total de navios de {operation_selection}: {len(filtered_ships)}")
-            
-            case 6:
                 print("Exportando dados dos portos de Santos e Paranagua por carga/operacao/ como XLSX...")
                 santos_export_filtered_data_as_xlsx()
                 paranagua_export_filtered_data_as_xlsx()
 
-            case 7:
+            case 6:
                 print("Encerrando o sistema...")
                 break
 

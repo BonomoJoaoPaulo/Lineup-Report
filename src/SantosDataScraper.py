@@ -1,13 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
-import pandas as pd
-import os
 
-from PortDataScraper import PortDataScraper
-from SantosShips.SantosShip import SantosShip
 from SantosShips.SantosSingleOperationShip import SantosSingleOperationShip
 from SantosShips.SantosMultiOperationShip import SantosMultiOperationShip
-from SantosShips.SantosShipsList import SantosShipsList
+
 
 class SantosDataScrapper():
     def __init__(self, ship_list, url):
@@ -16,7 +12,7 @@ class SantosDataScrapper():
 
     def scrap_data(self):
         print("Scraping data from Santos port...")
-        website = "https://www.portodesantos.com.br/informacoes-operacionais/operacoes-portuarias/navegacao-e-movimento-de-navios/navios-esperados-carga/"
+        website = self.url
         response = requests.get(website)
         content = response.content
         soup = BeautifulSoup(content, "lxml")

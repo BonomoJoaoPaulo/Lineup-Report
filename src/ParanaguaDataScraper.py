@@ -1,7 +1,5 @@
 from bs4 import BeautifulSoup
 import requests
-import pandas as pd
-import re
 
 from ParanaguaShips.ParanaguaMooredShip import ParanaguaMooredShip
 from ParanaguaShips.ParanaguaProgrammedShip import ParanaguaProgrammedShip
@@ -11,6 +9,7 @@ from ParanaguaShips.ParanaguaExpectedShip import ParanaguaExpectedShip
 from ParanaguaShips.ParanaguaSupportShip import ParanaguaSupportShip
 from ParanaguaShips.ParanaguaDispatchedShip import ParanaguaDispatchedShip
 
+
 class ParanaguaDataScraper():
     def __init__(self, ships_list, url):
         self.url = url
@@ -18,7 +17,7 @@ class ParanaguaDataScraper():
 
     def scrap_data(self):
         print("Scraping data from Paranaguá port...")
-        website = "https://www.appaweb.appa.pr.gov.br/appaweb/pesquisa.aspx?WCI=relLineUpRetroativo"
+        website = self.url
         response = requests.get(website)
         content = response.text
 

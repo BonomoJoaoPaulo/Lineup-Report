@@ -161,3 +161,8 @@ cython_debug/
 
 # Log files
 *.log
+
+# Output files
+*.json
+*.csv
+*.xlsx
