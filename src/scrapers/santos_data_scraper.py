@@ -13,7 +13,7 @@ class SantosDataScrapper():
     def scrap_data(self):
         print("Scraping data from Santos port...")
         website = self.url
-        response = requests.get(website)
+        response = requests.get(website, verify=False)
         content = response.content
         soup = BeautifulSoup(content, "lxml")
 
@@ -112,5 +112,3 @@ class SantosDataScrapper():
                                                 ship_terminal, ship_type)
 
                 self.ships_list.add_ship(new_santos_ship)
-
-                #print(new_santos_ship)
