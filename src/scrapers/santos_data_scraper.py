@@ -1,14 +1,18 @@
+from typing import List, Dict, Text
 from bs4 import BeautifulSoup
+from datetime import datetime
 import requests
-
-from SantosShips.SantosSingleOperationShip import SantosSingleOperationShip
-from SantosShips.SantosMultiOperationShip import SantosMultiOperationShip
+import json
+import csv
+import os
 
 
 class SantosDataScrapper():
-    def __init__(self, ship_list, url):
+    def __init__(self, url):
         self.url = url
-        self.ships_list = ship_list
+        if not url:
+            raise ValueError("URL is required")
+        self._ships_list: List[Dict[Text, Text]] = self.scrap_data()
 
     def scrap_data(self):
         print("Scraping data from Santos port...")
@@ -17,98 +21,55 @@ class SantosDataScrapper():
         content = response.content
         soup = BeautifulSoup(content, "lxml")
 
-
         tables = soup.find_all("table")
-
-        table_conter = 0
-
-        for table in tables:
+        santos_ships = []
+        for i in range(len(tables)):
+            table = tables[i]
             table_header = table.find('thead')
-            table_body = table.find('tbody')
-
+            table_body = table.find('tbody')            
             ship_type = table_header.find('tr').find('th').text
+            columns = []
+            
+            for i in range(1, len(table_header.find_all('tr'))):
+                for th in table_header.find_all('tr')[i].find_all('th'):
+                    columns.append(th.text)
 
             for ship in table_body.find_all('tr'):
-                count_td = 0
-                multiple_operation = False
+                ship_data = {}
+                ship_data["TipoNavio"] = ship_type
+                for i in range(len(ship.find_all('td')) - 1):
+                    ship_data[columns[i]] = ship.find_all('td')[i].text
+                santos_ships.append(ship_data)
+            
+        return santos_ships
 
-                for ship_data in ship.find_all('td'):
-                    match count_td:
-                        case 0:
-                            ship_name = ship_data.text
-                        case 1:
-                            ship_flag = ship_data.text
-                        case 2:
-                            br_tag = ship_data.find('br')
-                            if br_tag and br_tag.previous_sibling and br_tag.next_sibling:
-                                # The text before the 'br' is the lenght value
-                                ship_lenght = br_tag.previous_sibling.strip()
-                                # The text after 'br' is the draft value
-                                ship_draft = br_tag.next_sibling.strip()
-                            else:
-                                ship_lenght = ship_data.text
-                                ship_draft = None
-                        case 3:
-                            ship_navigation = ship_data.text
-                        case 4:
-                            ship_arrival = ship_data.text
-                        case 5:
-                            ship_notice = ship_data.text
-                        case 6:
-                            ship_office = ship_data.text
-                        case 7:
-                            br_tag = ship_data.find('br')
-                            if br_tag and (br_tag.previous_sibling and br_tag.next_sibling != " "):
-                                multiple_operation = True
-                                ship_first_operation = br_tag.previous_sibling.strip()
-                                ship_second_operation = br_tag.next_sibling.strip()
-                            else:
-                                ship_operation = ship_data.text
-                        case 8:
-                            if multiple_operation:
-                                br_tag = ship_data.find('br')
-                                ship_first_goods = br_tag.previous_sibling.strip()
-                                ship_second_goods = br_tag.next_sibling.strip()
-                            else:
-                                ship_goods = ship_data.text
-                                if ship_goods == "CONTEINERES CHEIOSCONTEINERES CHEIOS":
-                                    ship_goods = "CONTEINERES CHEIOS"
-                        case 9:
-                            if multiple_operation:
-                                br_tag = ship_data.find('br')
-                                ship_first_weight = br_tag.previous_sibling.strip()
-                                ship_second_weight = br_tag.next_sibling.strip()
-                                if ship_first_weight == "":
-                                    ship_first_weight = "0"
-                                if ship_second_weight == "":
-                                    ship_second_weight = "0"
-                            else:
-                                ship_weight = ship_data.text
-                                if ship_weight == "":
-                                    ship_weight = "0"
-                        case 10:
-                            ship_voyage = ship_data.text
-                        case 11:
-                            ship_duv = ship_data.text
-                        case 12:
-                            ship_priority = ship_data.text
-                        case 13:
-                            ship_terminal = ship_data.text
-                        case default:
-                            pass
-                    
-                    count_td += 1
+    def list_ships(self) -> List[Dict[Text, Text]]:
+        return self._ships_list
 
-                if multiple_operation:
-                    new_santos_ship = SantosMultiOperationShip(ship_name, ship_flag, ship_lenght, ship_draft,
-                                                ship_navigation, ship_arrival, ship_notice, ship_office, ship_first_operation,
-                                                ship_second_operation, ship_first_goods, ship_second_goods, ship_first_weight,
-                                                ship_second_weight, ship_voyage, ship_duv, ship_priority,
-                                                ship_terminal, ship_type)
-                else:
-                    new_santos_ship = SantosSingleOperationShip(ship_name, ship_flag, ship_lenght, ship_draft,
-                                                ship_navigation, ship_arrival, ship_notice, ship_office, ship_operation,
-                                                ship_goods, ship_weight, ship_voyage, ship_duv, ship_priority,
-                                                ship_terminal, ship_type)
+    def ships_to_json(self) -> Text:
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") 
+        file_name = f"santos_ships_{timestamp}.json"
+        file_path = os.path.join("../output/json", file_name)
+        with open(file_path, 'w') as json_file:
+            json.dump(self._ships_list, json_file, indent=4)
+        
+        return file_path
+    
+    def ships_to_csv(self) -> Text:
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") 
+        file_name = f"santos_ships_{timestamp}.csv"
+        file_path = os.path.join("../output/csv", file_name)
+        headers = self._ships_list[0].keys()
+        with open(file_path, 'w', newline='', encoding='utf-8') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=headers)
+            writer.writeheader()
+            writer.writerows(self._ships_list)
+        
+        return file_path
 
-                self.ships_list.add_ship(new_santos_ship)
+
+if __name__ == "__main__":
+    santos = SantosDataScrapper("https://www.portodesantos.com.br/informacoes-operacionais/operacoes-portuarias/navegacao-e-movimento-de-navios/navios-esperados-carga/")
+    santos.scrap_data()
+    santos.ships_to_json()
+    santos.ships_to_csv()
