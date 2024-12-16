@@ -15,11 +15,13 @@ def scrap_all_data() -> tuple[pds, sads, sds]:
     return paranagua_data_scraper, santarem_data_scraper, santos_data_scraper
 
 def export_all_data_as_csv(paranagua_data_scraper, santarem_data_scraper, santos_data_scraper) -> None:
+    print("Exportando dados para CSV...")
     paranagua_data_scraper.ships_to_csv()
     santarem_data_scraper.ships_to_csv()
     santos_data_scraper.ships_to_csv()
 
 def export_all_data_as_json(paranagua_data_scraper, santarem_data_scraper, santos_data_scraper) -> None:
+    print("Exportando dados para JSON...")
     paranagua_data_scraper.ships_to_json()
     santarem_data_scraper.ships_to_json()
     santos_data_scraper.ships_to_json()
