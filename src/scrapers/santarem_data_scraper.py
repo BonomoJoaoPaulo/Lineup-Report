@@ -14,7 +14,7 @@ class SantaremDataScraper():
         self._ships_list: List[Dict[Text, Text]] = self.scrap_data()
 
     def scrap_data(self) -> List[Dict[Text, Text]]:
-        print("Scraping data from Santarém port...")
+        print("Scraping data from SANTAREM port...")
         website = self._url
         response = requests.get(website, verify=False)
         content = response.content
@@ -40,6 +40,7 @@ class SantaremDataScraper():
                 ship_data["Berco"] = berco_info
                 santarem_ships.append(ship_data)
         
+        print("Data scraped successfully from SANTAREM port.")
         return santarem_ships
     
     def list_ships(self) -> List[Dict[Text, Text]]:

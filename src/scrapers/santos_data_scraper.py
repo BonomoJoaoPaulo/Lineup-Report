@@ -15,7 +15,7 @@ class SantosDataScrapper():
         self._ships_list: List[Dict[Text, Text]] = self.scrap_data()
 
     def scrap_data(self):
-        print("Scraping data from Santos port...")
+        print("Scraping data from SANTOS port...")
         website = self.url
         response = requests.get(website, verify=False)
         content = response.content
@@ -41,6 +41,7 @@ class SantosDataScrapper():
                     ship_data[columns[i]] = ship.find_all('td')[i].text
                 santos_ships.append(ship_data)
             
+        print("Data scraped successfully from SANTOS port.")
         return santos_ships
 
     def list_ships(self) -> List[Dict[Text, Text]]:
