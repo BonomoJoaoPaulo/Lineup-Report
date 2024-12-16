@@ -26,7 +26,7 @@ class SantaremDataScraper():
             table = tables[i]
             table_header = table.find('thead')
             table_body = table.find('tbody')
-            berco_info = table_header.find('tr').find('th').text
+            berco_info = (table_header.find('tr').find('th').text).replace("\n", " ").replace("\r", " ")
             
             columns = []
             for i in range(1, len(table_header.find_all('tr'))):

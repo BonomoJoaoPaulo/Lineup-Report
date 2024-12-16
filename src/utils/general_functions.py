@@ -1,3 +1,6 @@
+import os
+import glob
+
 from scrapers.paranagua_data_scraper import ParanaguaDataScraper as pds
 from scrapers.santos_data_scraper import SantosDataScrapper as sds
 from scrapers.santarem_data_scraper import SantaremDataScraper as sads
@@ -25,3 +28,14 @@ def export_all_data_as_json(paranagua_data_scraper, santarem_data_scraper, santo
     paranagua_data_scraper.ships_to_json()
     santarem_data_scraper.ships_to_json()
     santos_data_scraper.ships_to_json()
+
+def get_most_recent_file(directory, file_prefix, file_format="csv"):
+    file_pattern = os.path.join(directory, f"{file_prefix}_*.{file_format}")  
+    files = glob.glob(file_pattern)
+    
+    if not files:
+        return None
+    
+    files.sort(key=os.path.getmtime, reverse=True)
+    
+    return files[0]
