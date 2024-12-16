@@ -1,5 +1,6 @@
 from typing import List, Dict, Text
 from bs4 import BeautifulSoup
+from datetime import datetime
 import requests
 import json
 import os
@@ -36,6 +37,7 @@ class SantaremDataScraper():
                 ship_data = {}
                 for i in range(len(ship.find_all('td'))):
                     ship_data[columns[i]] = ship.find_all('td')[i].text
+                ship_data["Berco"] = berco_info
                 santarem_ships.append(ship_data)
         
         return santarem_ships
@@ -43,18 +45,26 @@ class SantaremDataScraper():
     def list_ships(self) -> List[Dict[Text, Text]]:
         return self._ships_list
     
-    def ships_to_json(self) -> None:
-        file_path = os.path.join("../output/json", "santarem_all_ships.json")
+    def ships_to_json(self) -> Text:
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") 
+        file_name = f"santarem_ships_{timestamp}.json"
+        file_path = os.path.join("../output/json", file_name)
         with open(file_path, 'w') as json_file:
             json.dump(self._ships_list, json_file, indent=4)
+        
+        return file_path
     
-    def ships_to_csv(self) -> None:
-        file_path = os.path.join("../output/csv", "santarem_all_ships.csv")
+    def ships_to_csv(self) -> Text:
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") 
+        file_name = f"santarem_ships_{timestamp}.csv"
+        file_path = os.path.join("../output/csv", file_name)
         headers = self._ships_list[0].keys()
         with open(file_path, 'w', newline='', encoding='utf-8') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=headers)
             writer.writeheader()
             writer.writerows(self._ships_list)
+        
+        return file_path
 
 
 if __name__ == "__main__":
