@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from utils.santarem_functions import compare_quantities_by_goods, compare_quantities_by_goods_simplificado, compare_arrivals_over_time, compare_status_distribution, compare_quantities_by_status
+from main_menu import ask_user_want_to_close
 
 def create_santarem_frame(container, show_frame, menu_frame):
     santarem_frame = tk.Frame(container)
