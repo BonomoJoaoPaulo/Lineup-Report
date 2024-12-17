@@ -18,7 +18,7 @@ def run_main_menu(paranagua, santarem, santos):
     # Configuração da janela principal
     root = tk.Tk()
     root.title("Line-up de Navios")
-    root.geometry("500x400")
+    root.geometry("350x400")
 
     # Configuração do container de frames
     container = tk.Frame(root)
