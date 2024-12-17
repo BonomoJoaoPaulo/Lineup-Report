@@ -1,7 +1,6 @@
 import tkinter as tk
 
 from utils.paranagua_functions import plot_mercadoria_vs_quantidade, plot_sentido_operacoes, plot_top_operadores, plot_prancha_por_embarcacao, plot_loa_vs_saldo
-from main_menu import ask_user_want_to_close
 
 def create_paranagua_frame(container, show_frame, menu_frame):
     paranagua_frame = tk.Frame(container)
@@ -27,8 +26,5 @@ def create_paranagua_frame(container, show_frame, menu_frame):
     # Botões de navegação
     btn_back_to_menu = tk.Button(paranagua_frame, text="Voltar ao menu principal", font=("Arial", 12), command=lambda: show_frame(menu_frame))
     btn_back_to_menu.pack(pady=20)
-
-    btn_exit_paranagua = tk.Button(paranagua_frame, text="Sair", font=("Arial", 12), command=lambda: root.destroy() if ask_user_want_to_close() else None)
-    btn_exit_paranagua.pack(pady=5)
 
     return paranagua_frame

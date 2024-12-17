@@ -1,7 +1,6 @@
 import tkinter as tk
 
 from utils.santarem_functions import compare_quantities_by_goods, compare_quantities_by_goods_simplificado, compare_arrivals_over_time, compare_status_distribution, compare_quantities_by_status
-from main_menu import ask_user_want_to_close
 
 def create_santarem_frame(container, show_frame, menu_frame):
     santarem_frame = tk.Frame(container)
@@ -24,12 +23,7 @@ def create_santarem_frame(container, show_frame, menu_frame):
     santarem_option4 = tk.Button(santarem_frame, text="Quantidades por Status", font=("Arial", 12), command=compare_quantities_by_status)
     santarem_option4.pack(pady=5)
     
-
-    # Botões de navegação
     btn_back_to_menu = tk.Button(santarem_frame, text="Voltar ao menu principal", font=("Arial", 12), command=lambda: show_frame(menu_frame))
     btn_back_to_menu.pack(pady=20)
-
-    btn_exit_santarem = tk.Button(santarem_frame, text="Sair", font=("Arial", 12), command=lambda: root.destroy() if ask_user_want_to_close() else None)
-    btn_exit_santarem.pack(pady=5)
 
     return santarem_frame
