@@ -7,7 +7,7 @@ from datetime import datetime
 from utils.general_functions import get_most_recent_file
   
 def compare_quantities_by_goods():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "santarem_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -27,7 +27,7 @@ def compare_quantities_by_goods():
     plt.show()
 
 def compare_quantities_by_goods_simplificado():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "santarem_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -48,7 +48,7 @@ def compare_quantities_by_goods_simplificado():
     plt.show()
 
 def compare_arrivals_over_time():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "santarem_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -67,7 +67,7 @@ def compare_arrivals_over_time():
     plt.show()
 
 def compare_status_distribution():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "santarem_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -80,7 +80,7 @@ def compare_status_distribution():
     plt.show()
 
 def compare_quantities_by_status():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "santarem_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")

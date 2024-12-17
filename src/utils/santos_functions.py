@@ -5,7 +5,7 @@ import seaborn as sns
 from utils.general_functions import get_most_recent_file
 
 def plot_peso_total_por_mercadoria():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "santos_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -23,7 +23,7 @@ def plot_peso_total_por_mercadoria():
     plt.show()
 
 def plot_navios_por_bandeiras():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "santos_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -40,7 +40,7 @@ def plot_navios_por_bandeiras():
     plt.show()
 
 def plot_operacoes_por_agencia():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "santos_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -57,7 +57,7 @@ def plot_operacoes_por_agencia():
     plt.show()
 
 def plot_proporcao_navios_por_operacao():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "santos_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -72,7 +72,7 @@ def plot_proporcao_navios_por_operacao():
     plt.show()
 
 def plot_linha_do_tempo():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "santos_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")

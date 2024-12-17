@@ -49,7 +49,7 @@ class SantaremDataScraper():
     def ships_to_json(self) -> Text:
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") 
         file_name = f"santarem_ships_{timestamp}.json"
-        file_path = os.path.join("../output/json", file_name)
+        file_path = os.path.join("../data/json", file_name)
         with open(file_path, 'w') as json_file:
             json.dump(self._ships_list, json_file, indent=4)
         
@@ -58,7 +58,7 @@ class SantaremDataScraper():
     def ships_to_csv(self) -> Text:
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") 
         file_name = f"santarem_ships_{timestamp}.csv"
-        file_path = os.path.join("../output/csv", file_name)
+        file_path = os.path.join("../data/csv", file_name)
         headers = self._ships_list[0].keys()
         with open(file_path, 'w', newline='', encoding='utf-8') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=headers)

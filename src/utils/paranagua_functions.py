@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from utils.general_functions import get_most_recent_file
 
 def plot_mercadoria_vs_quantidade():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "paranagua_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -21,7 +21,7 @@ def plot_mercadoria_vs_quantidade():
     plt.show()
 
 def plot_sentido_operacoes():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "paranagua_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -38,7 +38,7 @@ def plot_sentido_operacoes():
     plt.show()
 
 def plot_top_operadores():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "paranagua_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -55,7 +55,7 @@ def plot_top_operadores():
     plt.show()
 
 def plot_prancha_por_embarcacao():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "paranagua_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
@@ -72,7 +72,7 @@ def plot_prancha_por_embarcacao():
     plt.show()
 
 def plot_loa_vs_saldo():
-    directory = "../output/csv"
+    directory = "../data/csv"
     file_prefix = "paranagua_ships"
     recent_file = get_most_recent_file(directory, file_prefix)
     df = pd.read_csv(recent_file, delimiter=",")
