@@ -8,10 +8,10 @@ def create_santarem_frame(container, show_frame, menu_frame):
     santarem_header = tk.Label(santarem_frame, text="SANTARÉM - OPÇÕES AVANÇADAS", font=("Arial", 14), pady=10)
     santarem_header.pack()
 
-    santarem_option1 = tk.Button(santarem_frame, text="Quantidades por Mercadoria", font=("Arial", 12), command=compare_quantities_by_goods)
+    santarem_option1 = tk.Button(santarem_frame, text="Quantidade por Mercadoria", font=("Arial", 12), command=compare_quantities_by_goods)
     santarem_option1.pack(pady=5)
 
-    santarem_option5 = tk.Button(santarem_frame, text="Operações por Mercadoria Simplificadas", font=("Arial", 12), command=compare_quantities_by_goods_simplificado)
+    santarem_option5 = tk.Button(santarem_frame, text="Quantidade por Mercadoria Simplificadas", font=("Arial", 12), command=compare_quantities_by_goods_simplificado)
     santarem_option5.pack(pady=5)
     
     santarem_option2 = tk.Button(santarem_frame, text="Linha Temporal", font=("Arial", 12), command=compare_arrivals_over_time)
